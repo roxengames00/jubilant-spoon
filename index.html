@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jubilant Spoon — Lads Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Jubilant Spoon — Lads Tracker</h1>
+    <form id="accountForm">
+      <label>
+        Service
+        <select id="service">
+          <option value="Love">Love</option>
+          <option value="Deepspace">Deepspace</option>
+          <option value="Other">Other</option>
+        </select>
+      </label>
+      <label>
+        Account name
+        <input id="name" required placeholder="username or display name" />
+      </label>
+      <label>
+        Notes
+        <input id="notes" placeholder="optional notes" />
+      </label>
+      <button type="submit">Add / Save</button>
+    </form>
+
+    <section>
+      <h2>Saved Accounts</h2>
+      <ul id="accountsList" class="list"></ul>
+      <div class="actions">
+        <button id="clearAll">Clear all</button>
+        <button id="export">Export JSON</button>
+        <input id="importFile" type="file" accept=".json" style="display:none" />
+        <button id="importBtn">Import JSON</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
