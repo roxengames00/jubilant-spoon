@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Love & Deepspace — Account Tracker</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            background: #f6f0ff; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        h1 { text-align: center; }
+        .container { 
+            max-width: 900px; 
+            margin: auto;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px #0001;
+        }
+        input, textarea, select {
+            width: 100%; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #ccc; 
+            margin-bottom: 12px;
+        }
+        button {
+            background: #8d57fa; 
+            padding: 10px 18px; 
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover { background: #7342d6; }
+        .account-block {
+            background: #faf7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 5px solid #8d57fa;
+        }
+        summary {
+            cursor: pointer;
+            font-weight: bold;
+            margin: 6px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Love & Deepspace — Account Tracker</h1>
+
+<div class="container">
+
+    <!-- ADD ACCOUNT SECTION -->
+    <div class="card">
+        <h2>Add New Account</h2>
+
+        <input id="name" placeholder="Account Name">
+        <input id="email" placeholder="UID / Email">
+        <input id="region" placeholder="Server / Region">
+        <input id="level" placeholder="Player Level">
+        <input id="diamonds" placeholder="Diamonds / Currency">
+
+        <textarea id="pulls" placeholder="Pull History (optional)"></textarea>
+        <textarea id="cards" placeholder="Card Cataloging (SSR/SR/R counts or list)"></textarea>
+        <textarea id="companions" placeholder="Companions Unlocked"></textarea>
+        <textarea id="meow" placeholder="Meow Badges Unlocked"></textarea>
+        <textarea id="secrets" placeholder="Secret Times Unlocked"></textarea>
+        <textarea id="tender" placeholder="Tender Moments Unlocked"></textarea>
+        <textarea id="plushies" placeholder="Plushies Unlocked"></textarea>
+
+        <button onclick="saveAccount()">Save Account</button>
+    </div>
+
+    <!-- DISPLAY SECTION -->
+    <div class="card">
+        <h2>Your Saved Accounts</h2>
+        <div id="accountList"></div>
+    </div>
+
+    <!-- IMPORT EXPORT -->
+    <div class="card">
+        <h2>Export / Import Data</h2>
+        <button onclick="exportData()">Export to File</button>
+        <br><br>
+        <input type="file" id="importFile" onchange="importData(event)">
+    </div>
+
+</div>
+
+
+<script>
+// Load accounts
+function loadAccounts() {
+    return JSON.parse(localStorage.getItem("ldsAccounts") || "[]");
+}
+
+// Save account
+function saveAccount() {
+    let accounts = loadAccounts();
+
+    accounts.push({
+        name: name.value,
+        email: email.value,
+        region: region.value,
+        level: level.value,
+        diamonds: diamonds.value,
+
+        pulls: pulls.value,
+        cards: cards.value,
+        companions: companions.value,
+        meow: meow.value,
+        secrets: secrets.value,
+        tender: tender.value,
+        plushies: plushies.value
+    });
+
+    localStorage.setItem("ldsAccounts", JSON.stringify(accounts));
+    showAccounts();
+    alert("Account added!");
+}
+
+// Display accounts
+function showAccounts() {
+    let accounts = loadAccounts();
+    let html = "";
+
+    accounts.forEach((a, i) => {
+        html += `
+        <div class="account-block">
+            <strong>${a.name}</strong> — UID: ${a.email} <br>
+            Region: ${a.region}<br>
+            Level: ${a.level}<br>
+            Diamonds: ${a.diamonds}<br>
+
+            <details><summary>Gacha Pull History</summary><pre>${a.pulls}</pre></details>
+            <details><summary>Card Cataloging</summary><pre>${a.cards}</pre></details>
+            <details><summary>Companions Unlocked</summary><pre>${a.companions}</pre></details>
+            <details><summary>Meow Badges Unlocked</summary><pre>${a.meow}</pre></details>
+            <details><summary>Secret Times Unlocked</summary><pre>${a.secrets}</pre></details>
+            <details><summary>Tender Moments Unlocked</summary><pre>${a.tender}</pre></details>
+            <details><summary>Plushies Unlocked</summary><pre>${a.plushies}</pre></details>
+
+            <button onclick="deleteAccount(${i})" style="margin-top:10px;">Delete Account</button>
+        </div>`;
+    });
+
+    document.getElementById("accountList").innerHTML = html;
+}
+
+// Delete
+function deleteAccount(i) {
+    let accounts = loadAccounts();
+    accounts.splice(i, 1);
+    localStorage.setItem("ldsAccounts", JSON.stringify(accounts));
+    showAccounts();
+}
+
+// Export
+function exportData() {
+    let data = localStorage.getItem("ldsAccounts");
+    let blob = new Blob([data], {type: "application/json"});
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "lds_accounts.json";
+    a.click();
+}
+
+// Import
+function importData(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = function(e) {
+        localStorage.setItem("ldsAccounts", e.target.result);
+        showAccounts();
+        alert("Import complete!");
+    };
+
+    reader.readAsText(file);
+}
+
+showAccounts();
+</script>
+
+</body>
+</html>
